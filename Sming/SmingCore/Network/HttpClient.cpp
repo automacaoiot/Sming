@@ -18,6 +18,14 @@ HttpClient::~HttpClient()
 {
 }
 
+bool HttpClient::downloadString(String url, HttpClientCompletedDelegate onCompleted)
+{
+	if (isProcessing()) return false;
+	URL uri = URL(url);
+
+	return startDownload(uri, eHCM_String, onCompleted);
+}
+
 bool HttpClient::downloadString(String url, String method, HttpClientCompletedDelegate onCompleted)
 {
 	if (isProcessing()) return false;
@@ -53,6 +61,12 @@ bool HttpClient::downloadFile(String url, String saveFileName, HttpClientComplet
 	return startDownload(uri, "GET", eHCM_File, onCompleted);
 }
 
+bool HttpClient::startDownload(URL uri, HttpClientMode mode, HttpClientCompletedDelegate onCompleted)
+{
+	bool isPost = body.length();
+	
+	return this->startDownload(uri, (isPost ? "POST " : "GET "), mode, onCompleted);
+}
 bool HttpClient::startDownload(URL uri, String method, HttpClientMode mode, HttpClientCompletedDelegate onCompleted)
 {
 	reset();

@@ -34,6 +34,7 @@ public:
 	virtual ~HttpClient();
 
 	// Text mode
+	bool downloadString(String url, HttpClientCompletedDelegate onCompleted);
 	bool downloadString(String url, String method, HttpClientCompletedDelegate onCompleted);
 	String getResponseString(); // Can be used only after calling downloadString!
 
@@ -71,6 +72,7 @@ public:
 #endif
 
 protected:
+	bool startDownload(URL uri, HttpClientMode mode, HttpClientCompletedDelegate onCompleted);
 	bool startDownload(URL uri, String method, HttpClientMode mode, HttpClientCompletedDelegate onCompleted);
 	void onFinished(TcpClientState finishState);
 	virtual err_t onReceive(pbuf *buf);
