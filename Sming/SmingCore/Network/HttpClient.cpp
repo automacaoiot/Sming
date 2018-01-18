@@ -18,12 +18,12 @@ HttpClient::~HttpClient()
 {
 }
 
-bool HttpClient::downloadString(String url, HttpClientCompletedDelegate onCompleted)
+bool HttpClient::downloadString(String url, String method, HttpClientCompletedDelegate onCompleted)
 {
 	if (isProcessing()) return false;
 	URL uri = URL(url);
 
-	return startDownload(uri, eHCM_String, onCompleted);
+	return startDownload(uri, method, eHCM_String, onCompleted);
 }
 
 bool HttpClient::downloadFile(String url, HttpClientCompletedDelegate onCompleted /* = NULL */)
@@ -50,10 +50,10 @@ bool HttpClient::downloadFile(String url, String saveFileName, HttpClientComplet
 	saveFile = fileOpen(file.c_str(), eFO_CreateNewAlways | eFO_WriteOnly);
 	debugf("Download file: %s %d", file.c_str(), saveFile);
 
-	return startDownload(uri, eHCM_File, onCompleted);
+	return startDownload(uri, "GET", eHCM_File, onCompleted);
 }
 
-bool HttpClient::startDownload(URL uri, HttpClientMode mode, HttpClientCompletedDelegate onCompleted)
+bool HttpClient::startDownload(URL uri, String method, HttpClientMode mode, HttpClientCompletedDelegate onCompleted)
 {
 	reset();
 	this->mode = mode;
@@ -68,9 +68,11 @@ bool HttpClient::startDownload(URL uri, HttpClientMode mode, HttpClientCompleted
 		connect(uri.Host, uri.Port);
 	}
 
-	bool isPost = body.length();
-
-	sendString((isPost ? "POST " : "GET ") + uri.getPathWithQuery() + " HTTP/1.0\r\nHost: " + uri.Host + "\r\n");
+	//bool isPost = body.length();
+	//sendString((isPost ? "POST " : "GET ") + uri.getPathWithQuery() + " HTTP/1.0\r\nHost: " + uri.Host + "\r\n");
+	
+	sendString(method + " " + uri.getPathWithQuery() + " HTTP/1.0\r\nHost: " + uri.Host + "\r\n");
+	
 	for (int i = 0; i < requestHeaders.count(); i++)
 	{
 		String write = requestHeaders.keyAt(i) + ": " + requestHeaders.valueAt(i) + "\r\n";

@@ -5,6 +5,9 @@ Sming/compiler/lib/lib*.a
 # generated documentation
 docs/api
 
+# Ignore Compiled Libraries
+Sming/Libraries
+
 # dev tools, editors, etc.
 language.settings.xml
 .settings
